@@ -9,14 +9,14 @@ services:
       - POSTGRES_PASSWORD=pass
       - PGUSER=postgres
     ports:
-      - 24527:5432
+      - 10083:5432
 
   web:
     build: services/web
     depends_on:
       - pg_normalized
     ports:
-      - 8000:8000
+      - 10084:8000
     environment:
       - PG_USER=postgres
       - PG_PASSWORD=pass
@@ -25,6 +25,17 @@ services:
     volumes:
       - ./services/web:/app
     command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+  nginx:
+    build: ./services/nginx
+    volumes:
+      - static_volume:/home/app/web/project/static
+      - media_volume:/home/app/web/project/media
+    ports:
+      - 1084:80
+    depends_on:
+      - web
 
 volumes:
   pg_normalized:
+  static_volume:
+  media_volume:
