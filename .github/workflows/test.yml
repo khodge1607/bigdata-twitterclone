@@ -23,6 +23,6 @@ jobs:
           docker compose -f docker-compose.dev.yml up -d --build
           sleep 60
           docker ps -a
-          docker compose logs
+          docker compose -f docker-compose.dev.yml logs
           curl --fail http://localhost:10084/ || exit 1
-          docker compose down -v
+          docker compose -f docker-compose.dev.yml down -v

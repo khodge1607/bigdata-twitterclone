@@ -28,16 +28,16 @@ jobs:
 
       - name: Check all services are running
         run: |
-          docker compose ps
+          docker compose -f docker-compose.dev.yml ps
           # Check that all services are running (not exited)
-          if docker compose ps | grep -E "Exit|exited"; then
+          if docker compose -f docker-compose.dev.yml ps | grep -E "Exit|exited"; then
             echo "Some services have exited unexpectedly"
-            docker compose logs
+            docker compose -f docker-compose.dev.yml logs
             exit 1
           fi
           # Verify specific services are up
-          docker compose ps pg_normalized | grep -q "running\|Up"
-          docker compose ps web | grep -q "running\|Up"
+          docker compose -f docker-compose.dev.yml ps pg_normalized | grep -q "running\|Up"
+          docker compose -f docker-compose.dev.yml ps web | grep -q "running\|Up"
           echo "All services started successfully"
 
       - name: Test web service is responding
@@ -47,4 +47,4 @@ jobs:
 
       - name: Show logs on failure
         if: failure()
-        run: docker compose logs
+        run: docker compose -f docker-compose.dev.yml logs
