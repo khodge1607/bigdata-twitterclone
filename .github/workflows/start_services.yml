@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build and start services
-        run: docker compose -f docker-compose.dev.yml -d --build
+        run: docker compose -f docker-compose.dev.yml up -d --build
 
       - name: Wait for services to be healthy
         run: |
