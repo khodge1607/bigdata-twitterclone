@@ -20,7 +20,7 @@ jobs:
           echo "SQL_PORT=5432" >> .env.dev
           echo "DATABASE=postgres" >> .env.dev
           echo "APP_FOLDER=/usr/src/app" >> .env.dev
-          docker compose up -d --build
+          docker compose up -f docker-compose.dev.yml -d --build
           sleep 60
           docker ps -a
           docker compose logs
