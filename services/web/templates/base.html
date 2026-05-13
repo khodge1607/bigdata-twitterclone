@@ -1,3 +1,4 @@
+
 <html>
     <head>
         <title>Base</title>
@@ -7,9 +8,12 @@
         <nav>
             <ul>
                 <li><a href="/">Home</a></li>
-                <li><a href="/login">Login</a></li>
-                <li><a href="/logout">Logout</a></li>
-                <li><a href="/create_account">Create account</a></li>
+                {% if username %}
+                    <li><a href="/logout">Logout</a></li>
+                {% else %}
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/create_account">Create account</a></li>
+                {% endif %}
                 <li><a href="/create_message">Create message</a></li>
                 <li><a href="/search">Search</a></li>
             </ul>

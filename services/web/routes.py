@@ -4,10 +4,43 @@ from fastapi import Form
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import JSONResponse
 from fastapi import Cookie
+import os
+import sqlalchemy
 
 # Define the router before using it
 router = APIRouter()
 templates = Jinja2Templates(directory="templates")
+
+#connecting to database?
+_DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://postgres:pass@pg_normalized_batch:5432/postgres")
+_engine = sqlalchemy.create_engine(_DATABASE_URL) if _DATABASE_URL else None
+
+connection = _engine.connect()
+
+
+def create_account(username: str, password: str, confirm_password: str):
+    
+    if password != confirm_password:
+        return "Password doesn't match"
+
+    with connection.begin():
+        sql = sqlalchemy.sql.text('''
+            SELECT username FROM credentials
+            WHERE username = :username
+        ''')
+        res = connection.execute(sql, {
+            'username': username
+            })
+        row = res.fetchone()
+
+        if row is not None:
+            return "Username already in use, please chose a new username"
+
+        sql = sqlalchemy.sql.text('''
+            INSERT INTO credentials (username, password) VALUES (:username, :password)
+            ''')
+        res = connection.execute(sql, {'username': username, 'password': password })
+        return True
 
 def check_credentials(username: str, password: str) -> str:
     """
@@ -22,7 +55,19 @@ def check_credentials(username: str, password: str) -> str:
     """
     # FIXME: Add database code to check credentials
     # For now, this is a mock with hardcoded valid credentials
-    if username == "Trump" and password == "12345":
+    with connection.begin():
+
+        sql = sqlalchemy.sql.text('''
+            SELECT password FROM credentials
+            WHERE username = :username
+            ''')
+        res = connection.execute(sql, {'username': username})
+        row = res.fetchone()
+        if row is None:
+            return None
+        stored_password = row.password
+
+    if password == stored_password:
         return username
     else:
         return None
@@ -94,8 +139,12 @@ def read_create_account(request: Request):
 @router.post("/create_account")
 def post_create_account(request: Request, username: str = Form(...), password: str = Form(...), confirm_password: str = Form(...)):
     """Returns the HTML content after a successful account creation"""
+    created_account = create_account(username, password, confirm_password)
     username = logged_in_user(request)
-    return templates.TemplateResponse("account_created.html", {"request": request, "username": username})
+    if created_account == "Unexpected Error" or created_account == "Username already exists" or created_account=="Passwords do not match":
+        return templates.TemplateResponse(request, "create_account.html", {"request": request, "username": username, "error": created_account})
+    else:
+        return templates.TemplateResponse(request, "account_created.html", {"request": request, "username": username})
 
 @router.get("/create_message")
 def read_create_message(request: Request):

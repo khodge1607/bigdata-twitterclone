@@ -1,30 +1,30 @@
 services:
-  pg_normalized:
-    build: services/pg_normalized
+  pg_normalized_batch:
+    build: services/pg_normalized_batch
     volumes:
       - ./:/tmp/db
-      - pg_normalized:/var/lib/postgresql/data
+      - pg_normalized_batch:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pass
       - PGUSER=postgres
     ports:
-      - 10083:5432
+      - 10883:5432
 
   web:
     build: services/web
     depends_on:
-      - pg_normalized
+      - pg_normalized_batch
     ports:
       - 10084:8000
     environment:
       - PG_USER=postgres
       - PG_PASSWORD=pass
-      - PG_HOST=pg_normalized
+      - PG_HOST=pg_normalized_batch
       - PG_PORT=5432
     volumes:
       - ./services/web:/app
     command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
 volumes:
-  pg_normalized:
+  pg_normalized_batch:
