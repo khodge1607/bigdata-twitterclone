@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-
 {% block content %}
     <h1>Create account page</h1>
     <form action="/create_account" method="post">
@@ -11,4 +10,7 @@
         <input type="password" id="confirm_password" name="confirm_password" required><br>
         <input type="submit" value="Submit">
     </form>
+    {% if error %}
+        <p style="color: red">{{ error }}</p>
+    {% endif %}
 {% endblock %}

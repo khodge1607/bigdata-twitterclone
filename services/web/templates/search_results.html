@@ -1,5 +1,36 @@
-{% extends "base.html" %}
 
+{% extends "base.html" %}
 {% block content %}
-    <h1>Search results for your query</h1>
+    <h1>Search Results for "{{ query }}"</h1>
+
+    {% if tweets %}
+        <ul>
+            {% for tweet in tweets %}
+                <li>
+                    <strong>{{ tweet['screen_name'] }}</strong>
+                    <span>{{ tweet['created_at'] }}</span>
+                    <p>{{ tweet['text'] | safe }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <nav>
+            {% if offset > 0 %}
+                <form method="post" action="/search">
+                    <input type="hidden" name="query" value="{{ query }}">
+                    <input type="hidden" name="offset" value="{{ prev_offset }}">
+                    <button type="submit">← Previous</button>
+                </form>
+            {% endif %}
+            {% if has_more %}
+                <form method="post" action="/search">
+                    <input type="hidden" name="query" value="{{ query }}">
+                    <input type="hidden" name="offset" value="{{ next_offset }}">
+                    <button type="submit">Next →</button>
+                </form>
+            {% endif %}
+        </nav>
+    {% else %}
+        <p>No results found for "{{ query }}".</p>
+    {% endif %}
 {% endblock %}

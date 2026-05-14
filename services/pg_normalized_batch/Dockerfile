@@ -3,7 +3,8 @@ FROM postgis/postgis
 RUN apt-get update && apt-get install -y \
     less \
     make \
-    vim
+    vim \
+    postgresql-17-rum
 
 WORKDIR /tmp/db
 

@@ -1,0 +1,10 @@
+nohup: ignoring input
+SELECT 31509080
+ALTER TABLE
+ALTER TABLE
+psql:/tmp/db/remove_duplicates.sql:8: ERROR:  cannot drop table tweets_old because other objects depend on it
+DETAIL:  constraint tweet_urls_id_tweets_fkey on table tweet_urls depends on table tweets_old
+constraint tweet_mentions_id_tweets_fkey on table tweet_mentions depends on table tweets_old
+constraint tweet_tags_id_tweets_fkey on table tweet_tags depends on table tweets_old
+constraint tweet_media_id_tweets_fkey on table tweet_media depends on table tweets_old
+HINT:  Use DROP ... CASCADE to drop the dependent objects too.

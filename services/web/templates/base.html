@@ -1,21 +1,53 @@
-
 <html>
     <head>
         <title>Base</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                color: #1e3a5f;
+                max-width: 800px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            h1 {
+                color: #1d4ed8;
+            }
+
+            nav ul {
+                list-style: none;
+                padding: 10px 16px;
+                display: flex;
+                gap: 16px;
+                background-color: #1d4ed8;
+                border-radius: 6px;
+            }
+
+            nav a {
+                color: #eff6ff;
+                text-decoration: none;
+                font-weight: bold;
+                font-size: 0.95rem;
+            }
+
+            nav a.active {
+                color: #D6C3C9;
+            }
+        </style>
     </head>
     <body>
         <h1>Twitter Clone</h1>
         <nav>
             <ul>
-                <li><a href="/">Home</a></li>
+                <li><a href="/" class="{{ 'active' if active_page == 'home' }}">Home</a></li>
                 {% if username %}
+                    <li><a href="/create_message" class="{{ 'active' if active_page == 'create_message' }}">Create message</a></li>
                     <li><a href="/logout">Logout</a></li>
                 {% else %}
-                    <li><a href="/login">Login</a></li>
-                    <li><a href="/create_account">Create account</a></li>
+                    <li><a href="/login" class="{{ 'active' if active_page == 'login' }}">Login</a></li>
+                    <li><a href="/create_account" class="{{ 'active' if active_page == 'create_account' }}">Create account</a></li>
                 {% endif %}
-                <li><a href="/create_message">Create message</a></li>
-                <li><a href="/search">Search</a></li>
+                <li><a href="/search" class="{{ 'active' if active_page == 'search' }}">Search</a></li>
             </ul>
         </nav>
         {% if username %}

@@ -1,5 +1,64 @@
 {% extends "base.html" %}
-
 {% block content %}
-    <h1>Welcome to the home page</h1>
+<style>
+  .home-hero h1 {
+    margin-bottom: 0.1rem;
+    color: #1a6bb5;
+  }
+
+  .home-hero .subtitle {
+    margin: 0 0 1.25rem;
+    color: #5ba3d9;
+    font-size: 1rem;
+  }
+
+  .pagination {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.25rem;
+  }
+
+  .pagination a {
+    font-size: 0.92rem;
+    padding: 0.4rem 1.1rem;
+    border-radius: 999px;
+    text-decoration: none;
+    border: 2px solid #1a6bb5;
+    color: #1a6bb5;
+    transition: background 0.18s, color 0.18s;
+  }
+
+  .pagination a:hover {
+    background: #1a6bb5;
+    color: #fff;
+  }
+</style>
+
+<div class="home-hero">
+  <h1>Home Page</h1>
+  <p class="subtitle">All Tweets</p>
+</div>
+
+{% if tweets %}
+  <ul>
+    {% for tweet in tweets %}
+      <li>
+        <strong>{{ tweet['screen_name'] }}</strong>
+        <span>{{ tweet['created_at'] }}</span>
+        <p>{{ tweet['text'] }}</p>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <nav class="pagination">
+    {% if pager and pager['has_newer'] %}
+      <a href="{{ pager['newer_href'] }}">← Newer</a>
+    {% endif %}
+    {% if pager and pager['has_older'] %}
+      <a href="{{ pager['older_href'] }}">Older →</a>
+    {% endif %}
+  </nav>
+{% else %}
+  <p>No tweets yet.</p>
+{% endif %}
 {% endblock %}
